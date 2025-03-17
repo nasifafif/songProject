@@ -6,7 +6,7 @@ public class Song {
     private int year;
     private double dance_ability;
 
-    public Song(String artist, String title, double duration, int year, double dance_ability,String genre) {
+    public Song(String artist,String title,int duration,int year,String genre, double dance_ability) {
         this.artist=artist;
         this.title=title;
         this.duration=duration;
