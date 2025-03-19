@@ -24,10 +24,10 @@ public class Song {
     public double getDuration(){
         return duration;
     }
-    public String genre(){
+    public String getGenre(){
         return genre;
     }
-    public int year(){
+    public int getYear(){
         return year;
     }
     public double getDance_ability(){

@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ public class musicCollection {
     public void start() {
         importData();
         removeExplicit();
+        menu();
     }
 
     public void importData(){
@@ -68,7 +70,7 @@ public class musicCollection {
         importExplicit();
         for(int i = 0; i<songs.size(); i++){
             for (String s : explicit) {
-                if (s.equals(songs.get(i).getArtist()) || s.equals(songs.get(i).getTitle())) {
+                if (songs.get(i).getArtist().contains(s) || songs.get(i).getTitle().contains(s)) {
                     songs.remove(i);
                     i--;
                 }
@@ -77,6 +79,53 @@ public class musicCollection {
     }
 
     public void menu(){
+        System.out.println("Welcome to the song collection!");
+        String menuOption = "";
+        Scanner scanner = new Scanner(System.in);
+        String[][] menu = new String[5][1];
+        menu[0][0]="Main Menu";
+        menu[1][0]="Search (t)itles";
+        menu[2][0]="Search (a)rtists";
+        menu[3][0]="Search (g)enre";
+        menu[4][0]="Search (y)ear";
+
+        while (!menuOption.equals("q")) {
+            for(int i = 0; i<menu.length; i++){
+                for(int j = 0; j<menu[0].length; j++){
+                    System.out.println(menu[i][j]);
+                }
+            }
+            System.out.println("Enter choice");
+            menuOption = scanner.nextLine();
+
+            if (menuOption.equals("t")) {
+                searchTitle();
+
+            } else if (menuOption.equals("a")) {
+                searchArtist();
+            }
+            else if(menuOption.equals("g")){
+                searchGenre();
+            }
+            else if (menuOption.equals("y")){
+                searchYear();
+            }
+            else if (menuOption.equals("q")) {
+                System.out.println("Goodbye!");
+            }
+            else {
+                System.out.println("Invalid choice!");
+            }
+        }
 
     }
+
+    public void searchTitle(){}
+
+    public void searchArtist(){}
+
+    public void searchGenre(){}
+
+    public void searchYear(){}
+
 }
