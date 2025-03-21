@@ -1,24 +1,21 @@
 import java.util.ArrayList;
 
-public class searchMethods extends musicCollection{
+public class searchMethods{
     public searchMethods(){}
 
-    public boolean linearSearchArtist(ArrayList<Song> songs, String artist){
-        for(int i = 0; i<songs.size(); i++){
-            if(songs.get(i).getArtist().equals(artist)){
-                return true;
+    public ArrayList<String> linearSearchTitle(String str, ArrayList<Song> allSongs){
+        ArrayList<String> matches = new ArrayList<>();
+        for(int i =0; i<allSongs.size(); i++){
+            if(allSongs.get(i).getTitle().toLowerCase().contains(str.toLowerCase())){
+                matches.add(allSongs.get(i).getTitle());
+                musicCollection.idxs.add(i);
             }
         }
-        return false;
+        return matches;
     }
 
-    public boolean linearSearchTitle(ArrayList<Song> songs, String title){
-        for(int i = 0; i<songs.size(); i++){
-            if(songs.get(i).getTitle().equals(title)){
-                return true;
-            }
-        }
-        return false;
+    public void linearSearchArtist(){
+
     }
 
     public boolean linearSearchGenre(ArrayList<Song> songs, String genre){

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 public class musicCollection {
     private ArrayList<Song> songs = new ArrayList<Song>();
     private ArrayList<String> explicit = new ArrayList<>();
+    private ArrayList<String> possibleSongs = new ArrayList<>();
+    public static ArrayList<Integer> idxs = new ArrayList<>();
+    private int songNum;
 
     public void start() {
         importData();
@@ -41,7 +44,7 @@ public class musicCollection {
                 try {
                     dance_ability = Double.parseDouble(split[5]);
                 } catch (NumberFormatException e) {
-                    System.out.println();
+                    System.out.print("");
                 }
 
                 Song song = new Song(artist,songTitle,duration,year,genre,dance_ability);
@@ -82,12 +85,13 @@ public class musicCollection {
         System.out.println("Welcome to the song collection!");
         String menuOption = "";
         Scanner scanner = new Scanner(System.in);
-        String[][] menu = new String[5][1];
+        String[][] menu = new String[6][1];
         menu[0][0]="Main Menu";
         menu[1][0]="Search (t)itles";
         menu[2][0]="Search (a)rtists";
         menu[3][0]="Search (g)enre";
         menu[4][0]="Search (y)ear";
+        menu[5][0]="(q)uit";
 
         while (!menuOption.equals("q")) {
             for(int i = 0; i<menu.length; i++){
@@ -95,7 +99,7 @@ public class musicCollection {
                     System.out.println(menu[i][j]);
                 }
             }
-            System.out.println("Enter choice");
+            System.out.println("Enter choice: ");
             menuOption = scanner.nextLine();
 
             if (menuOption.equals("t")) {
@@ -114,13 +118,38 @@ public class musicCollection {
                 System.out.println("Goodbye!");
             }
             else {
-                System.out.println("Invalid choice!");
+                System.out.println("Invalid choice");
             }
         }
 
     }
+    public void printInfo(int choice){
+        System.out.println("Title: " + songs.get(choice).getTitle());
+        System.out.println("Artist: " + songs.get(choice).getArtist());
+        double i = (double) 1 / 60000;
+        double dur = (songs.get(choice).getDuration()*i);
+        System.out.println("Duration: " + dur + " minutes");
+        System.out.println("Year: " + songs.get(choice).getYear());
+        System.out.println("Genre: " + songs.get(choice).getGenre());
+    }
 
-    public void searchTitle(){}
+    public void searchTitle(){
+        searchMethods x = new searchMethods();
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter a name of a song for more information of the track.");
+        String title = scan.nextLine();
+        possibleSongs=x.linearSearchTitle(title,songs);
+        System.out.println(possibleSongs.size()==idxs.size());
+        int count =0;
+        for(int i = 0; i<possibleSongs.size(); i++){
+            count++;
+            System.out.println(count + ": " + possibleSongs.get(i));
+        }
+        System.out.println("Which one would you like to learn about? (enter number)");
+        int choice = scan.nextInt();
+        songNum=idxs.get(choice);
+
+    }
 
     public void searchArtist(){}
 
