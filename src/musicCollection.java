@@ -7,14 +7,11 @@ import java.util.ArrayList;
 
 public class musicCollection {
     private ArrayList<Song> songs = new ArrayList<Song>();
-    private ArrayList<String> explicit = new ArrayList<>();
     private ArrayList<String> possibleSongs = new ArrayList<>();
     public static ArrayList<Integer> idxs = new ArrayList<>();
-    private int songNum;
 
     public void start() {
         importData();
-        removeExplicit();
         menu();
     }
 
@@ -54,32 +51,7 @@ public class musicCollection {
             System.out.println(exception.getMessage());
         }
     }
-    public void importExplicit() {
-        try {
-            File myFile = new File("src\\explicit.csv");
-            Scanner scan = new Scanner(myFile);
-            while (scan.hasNext()) {
-                String data = scan.nextLine();
-                explicit.add(data);
-            }
-        }
-        catch(IOException exception){
-            System.out.println(exception.getMessage());
 
-        }
-    }
-
-    public void removeExplicit() {
-        importExplicit();
-        for(int i = 0; i<songs.size(); i++){
-            for (String s : explicit) {
-                if (songs.get(i).getArtist().contains(s) || songs.get(i).getTitle().contains(s)) {
-                    songs.remove(i);
-                    i--;
-                }
-            }
-        }
-    }
 
     public void menu(){
         System.out.println("Welcome to the song collection!");
@@ -123,38 +95,159 @@ public class musicCollection {
         }
 
     }
-    public void printInfo(int choice){
-        System.out.println("Title: " + songs.get(choice).getTitle());
-        System.out.println("Artist: " + songs.get(choice).getArtist());
+
+    public void printInfo(int songNum){
+        System.out.println("Title: " + songs.get(songNum).getTitle());
+        System.out.println("Artist: " + songs.get(songNum).getArtist());
         double i = (double) 1 / 60000;
-        double dur = (songs.get(choice).getDuration()*i);
+        double dur = (songs.get(songNum).getDuration() * i);
         System.out.println("Duration: " + dur + " minutes");
-        System.out.println("Year: " + songs.get(choice).getYear());
-        System.out.println("Genre: " + songs.get(choice).getGenre());
+        System.out.println("Year: " + songs.get(songNum).getYear());
+        System.out.println("Genre: " + songs.get(songNum).getGenre());
+    }
+    public void linearSearchTitle(String title){
+        possibleSongs.clear();
+        idxs.clear();
+        for (int i = 0 ; i<songs.size(); i++){
+            if(songs.get(i).getTitle().toLowerCase().contains(title.toLowerCase())){
+                possibleSongs.add(songs.get(i).getTitle());
+                idxs.add(i);
+            }
+        }
+    }
+    public void linearSearchArtist(String artist){
+        possibleSongs.clear();
+        idxs.clear();
+        for(int i =0; i<songs.size(); i++){
+            if(songs.get(i).getArtist().toLowerCase().contains(artist.toLowerCase())){
+                possibleSongs.add(songs.get(i).getTitle());
+                idxs.add(i);
+            }
+        }
+    }
+    public void linearSearchGenre(String genre){
+        for(int i = 0; i<songs.size(); i++){
+            if(songs.get(i).getGenre().toLowerCase().contains(genre.toLowerCase())){
+                possibleSongs.add(songs.get(i).getTitle());
+                idxs.add(i);
+            }
+        }
+    }
+    public void linearSearchYear(int year) {
+        for (int i = 0; i < songs.size(); i++) {
+            if (songs.get(i).getYear() == year) {
+                possibleSongs.add(songs.get(i).getTitle());
+                idxs.add(i);
+            }
+        }
+    }
+
+    public void removeDuplicates() {
+        for (int i = 0; i < possibleSongs.size(); i++) {
+            for (int j = i + 1; j < possibleSongs.size(); j++) {
+                if (possibleSongs.get(i).equals(possibleSongs.get(j))) {
+                    possibleSongs.remove(j);
+                    idxs.remove(j); // Remove corresponding index
+                    j--;
+                }
+            }
+        }
     }
 
     public void searchTitle(){
-        searchMethods x = new searchMethods();
+        int count =  0;
         Scanner scan = new Scanner(System.in);
-        System.out.println("Enter a name of a song for more information of the track.");
+        System.out.println("Welcome! Enter a title of a song to search the database");
         String title = scan.nextLine();
-        possibleSongs=x.linearSearchTitle(title,songs);
-        System.out.println(possibleSongs.size()==idxs.size());
-        int count =0;
+        linearSearchTitle(title);
+        if(!possibleSongs.isEmpty()){
+            removeDuplicates();
+            for(int i =0; i<possibleSongs.size(); i++){
+                count++;
+                System.out.println(count+ ": " + possibleSongs.get(i));
+            }
+            System.out.println("Which song would you like to learn about?(Enter number)");
+            int choice = scan.nextInt();
+            printInfo(idxs.get(choice-1));
+        }
+        else{
+            System.out.println("No songs found with that title");
+        }
+
+    }
+
+    public void searchArtist(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter an artist to see their information.");
+        String artist = scan.nextLine();
+        linearSearchArtist(artist);
+        if(possibleSongs.isEmpty()){
+            System.out.println("No artists found matching that name.");
+            return;
+        }
+        removeDuplicates();
+        int count = 0;
         for(int i = 0; i<possibleSongs.size(); i++){
             count++;
             System.out.println(count + ": " + possibleSongs.get(i));
         }
-        System.out.println("Which one would you like to learn about? (enter number)");
+        System.out.println("Which song would you like to see information about?(Enter number)");
         int choice = scan.nextInt();
-        songNum=idxs.get(choice);
-
+        printInfo(idxs.get(choice-1));
     }
 
-    public void searchArtist(){}
+    public void searchGenre() {
+        possibleSongs.clear();
+        idxs.clear();
 
-    public void searchGenre(){}
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter a genre to search for songs:");
+        String genre = scan.nextLine();
+        linearSearchGenre(genre);
 
-    public void searchYear(){}
+        if (possibleSongs.isEmpty()) {
+            System.out.println("No songs found with that genre.");
+            return;
+        }
+
+        removeDuplicates();
+        int count = 0;
+        for (int i = 0; i < possibleSongs.size(); i++) {
+            count++;
+            System.out.println(count + ": " + possibleSongs.get(i));
+        }
+
+        System.out.println("Which song would you like to see information about? (Enter number)");
+        int choice = scan.nextInt();
+        printInfo(idxs.get(choice - 1));
+    }
+
+
+    public void searchYear() {
+        possibleSongs.clear();
+        idxs.clear();
+
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter a year to search for songs:");
+        int year = scan.nextInt();
+        scan.nextLine(); // consume leftover newline
+        linearSearchYear(year); // assuming your search method takes a String
+
+        if (possibleSongs.isEmpty()) {
+            System.out.println("No songs found from that year.");
+            return;
+        }
+
+        removeDuplicates();
+        int count = 0;
+        for (int i = 0; i < possibleSongs.size(); i++) {
+            count++;
+            System.out.println(count + ": " + possibleSongs.get(i));
+        }
+
+        System.out.println("Which song would you like to see information about? (Enter number)");
+        int choice = scan.nextInt();
+        printInfo(idxs.get(choice - 1));
+    }
 
 }
