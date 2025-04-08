@@ -1,7 +1,5 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -43,9 +41,14 @@ public class musicCollection {
                 } catch (NumberFormatException e) {
                     System.out.print("");
                 }
-
-                Song song = new Song(artist,songTitle,duration,year,genre,dance_ability);
+                Song song;
+                if(genre.contains("rock")){
+                    song = new RockSong(artist,songTitle,duration,year,genre,dance_ability);
+                }else {
+                    song = new Song(artist, songTitle, duration, year, genre);
+                }
                 songs.add(song);
+
             }
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
